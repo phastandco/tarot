@@ -3,8 +3,7 @@ import styled from 'styled-components';
 
 
 const nombres = ['3 joueurs', '4 joueurs', '5 joueurs'];
-const noms_joueurs  = [];
-const n = "joueur 4";
+let noms_joueurs  = [];
 
 const Button = styled.button`
   background-color: black;
@@ -30,55 +29,99 @@ const ButtonToggle = styled(Button)`
   `}
 `;
 
-function Nombre_joueurs() {
-    let n = 3
-    let num_joueurs = "joueur " + n
+const ButtonGroup = styled.div`
+  display: flex;
+`;
 
-    const [active, setActive] = useState(nombres[0]);
+function Form_joueurs (props) {
+    let nom_joueurs = props.noms
+    let form = <input type="text"  placeholder={props.noms.index} className="w-full"/>
+
     const [noms, setNoms] = useState(noms_joueurs)
+    console.log("props : " + props.nombre)
 
-    console.log("active " + active)
-    console.log("set active " + setActive + " n " + n)
+    for (let i = 0; i < props.nombre; i++) {
+        console.log("props 2 : " +  props.nombre)
+        console.log("i : " + i)
+        return (
+            noms_joueurs.map(nom => (
+                {form}
+            ))
+        )
+    }
+}
+
+function Setup () {
+
+    let n = 4;
+    const [active, setActive] = useState(nombres[0]);
+    const [checked, setChecked] = useState(false);
+
+    const petite = () => {
+        setChecked(!checked);
+    };
+
+    let update_nombre = function (nom) {
+        switch (nom){
+            case "3 joueurs":
+                n = 3
+                break;
+            case "4 joueurs":
+                n = 4
+                break;
+            case "5 joueurs":
+                n = 5
+                break;
+            default :
+                n = 4
+        }
+        return n;
+    }
 
     let nombres_joueurs = nombres.map(nom => (
         <ButtonToggle
             key={nom}
             active={active === nom}
-            onClick={() => setActive(nom)}
+            onClick={() => {
+                setActive(nom)
+                n = update_nombre(nom)
+                }
+            }
         >
             {nom}
         </ButtonToggle>
     ))
 
-    let forms_joueurs = nombres.map(nom => (
-        <input type = "text" class = "w-full"/>
-    ))
+    function affichage (n) {
+        let form = <input type="text"  placeholder={n} className="w-full"/>
+        for (let i = 0; i < n; i++) {
 
-    switch (active) {
-        case "3 joueurs" :
-            n = 3
-            break;
-        case "4 joueurs" :
-            n = 4
-            break;
-        case "5 joueurs" :
-            n = 5
-            break;
-        default : setActive(3);
+        }
     }
-
     return (
-        <div className = "form-joueurs">
-            <div className = "nombres-joueurs">
+        <div className = "form-joueurs display-flex bg-slate-200">
+            <div className = "flex justify-center">
+                <ButtonGroup>
                 {nombres_joueurs}
+                </ButtonGroup>
              </div>
-            <div className = "noms_joueurs">
-                {forms_joueurs}
+            <div className = "w-full justify-center" >
+                <Form_joueurs noms = {noms_joueurs} />
             </div>
-
-
+            <div className="petite">
+                <label className="display-flex w-full">
+                    Petite
+                    <input
+                        className="m-2"
+                        type = "checkbox"
+                        checked={checked}
+                        onChange={petite}
+                    />
+                </label>
+            </div>
+            <button>OK</button>
         </div>
     );
 }
 
-export default Nombre_joueurs
+export default Setup
