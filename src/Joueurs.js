@@ -1,127 +1,92 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import Input from "./Input";
 
+function Setup() {
+  const [inputValues, setinputValues] = useState({
+    player1: "",
+    player2: "",
+    player3: "",
+    player4: "",
+    player5: "",
+  });
 
-const nombres = ['3 joueurs', '4 joueurs', '5 joueurs'];
-let noms_joueurs  = [];
+  const nombres = ["3 joueurs", "4 joueurs", "5 joueurs"];
 
-const Button = styled.button`
-  background-color: black;
-  color: white;
-  font-size: 20px;
-  padding: 10px 30px;
-  border-radius: 5px;
-  margin: 10px 0px;
-  cursor: pointer;
-  &:disabled {
-    color: grey;
-    opacity: 0.7;
-    cursor: default;
-  }
-`;
+  const [active, setActive] = useState(4);
+  const [checked, setChecked] = useState(false);
 
-const ButtonToggle = styled(Button)`
-  opacity: 0.6;
-  ${({ active }) =>
-    active &&
-    `
-    opacity: 1;
-  `}
-`;
+  const buttonsList = () =>
+    nombres.map((nom, index) => (
+      <button
+        className="p-5 bg-blue-300 mr-3 text-black rounded-lg shadow-lg hover:bg-blue-400 text-lg"
+        key={index}
+        onClick={() => {
+          setActive(index + 3);
+        }}
+      >
+        {nom}
+      </button>
+    ));
 
-const ButtonGroup = styled.div`
-  display: flex;
-`;
-
-function Form_joueurs (props) {
-    let nom_joueurs = props.noms
-    let form = <input type="text"  placeholder={props.noms.index} className="w-full"/>
-
-    const [noms, setNoms] = useState(noms_joueurs)
-    console.log("props : " + props.nombre)
-
-    for (let i = 0; i < props.nombre; i++) {
-        console.log("props 2 : " +  props.nombre)
-        console.log("i : " + i)
-        return (
-            noms_joueurs.map(nom => (
-                {form}
-            ))
-        )
-    }
-}
-
-function Setup () {
-
-    let n = 4;
-    const [active, setActive] = useState(nombres[0]);
-    const [checked, setChecked] = useState(false);
-
-    const petite = () => {
-        setChecked(!checked);
-    };
-
-    let update_nombre = function (nom) {
-        switch (nom){
-            case "3 joueurs":
-                n = 3
-                break;
-            case "4 joueurs":
-                n = 4
-                break;
-            case "5 joueurs":
-                n = 5
-                break;
-            default :
-                n = 4
-        }
-        return n;
+  const displayInputList = () => {
+    const listInputs = [];
+    for (let i = 0; i < active; i++) {
+      const name = `player${i + 1}`;
+      listInputs.push(
+        <Input
+          key={i}
+          name={name}
+          placeholder={name}
+          value={inputValues.name}
+          onChange={handleInputs}
+        />
+      );
     }
 
-    let nombres_joueurs = nombres.map(nom => (
-        <ButtonToggle
-            key={nom}
-            active={active === nom}
-            onClick={() => {
-                setActive(nom)
-                n = update_nombre(nom)
-                }
-            }
-        >
-            {nom}
-        </ButtonToggle>
-    ))
+    return listInputs;
+  };
 
-    function affichage (n) {
-        let form = <input type="text"  placeholder={n} className="w-full"/>
-        for (let i = 0; i < n; i++) {
+  const display = (inputValues) => {
+    console.log("input : " + inputValues.player1);
 
-        }
-    }
-    return (
-        <div className = "form-joueurs display-flex bg-slate-200">
-            <div className = "flex justify-center">
-                <ButtonGroup>
-                {nombres_joueurs}
-                </ButtonGroup>
-             </div>
-            <div className = "w-full justify-center" >
-                <Form_joueurs noms = {noms_joueurs} />
-            </div>
-            <div className="petite">
-                <label className="display-flex w-full">
-                    Petite
-                    <input
-                        className="m-2"
-                        type = "checkbox"
-                        checked={checked}
-                        onChange={petite}
-                    />
-                </label>
-            </div>
-            <button>OK</button>
-        </div>
+    inputValues.map(
+      (nom, index) => <h6 key={index}>Joueur {nom}</h6>
+      // for (let i = 0; i < inputValues.lengt(); i++) {
+      //   inputValues.name;
+      // }
     );
+  };
+
+  const handleInputs = (e) => {
+    setinputValues({ ...inputValues, [e.target.name]: e.target.value });
+  };
+
+  return (
+    <div className="flex flex-col bg-slate-200 p-10 rounded-lg">
+      <div className="flex justify-center">{buttonsList()}</div>
+      <div className="w-full justify-center"></div>
+      <div className="w-full">{displayInputList()}</div>
+      <div className="flex mt-2 mb-5 flex-row w-full justify-center items-center">
+        <div className="flex items-center">
+          <label className="form-check-label text-sm mr-2 inline-block text-gray-400">
+            Petite
+          </label>
+          <input
+            onChange={() => setChecked(!checked)}
+            className="appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+            type="checkbox"
+            value={checked}
+          />
+        </div>
+      </div>
+      <button
+        className="w-full bg-blue-400 hover:bg-blue-500 py-2 px-5 rounded-lg text-lg text-black shadow-lg"
+        onClick={() => display(inputValues)}
+      >
+        Ok
+      </button>
+    </div>
+  );
 }
 
-export default Setup
+export default Setup;
